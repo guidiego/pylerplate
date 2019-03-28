@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, DateTime, Integer, Text, text, func
+from sqlalchemy import Column, DateTime, Integer, Text, String, text, func
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.inspection import inspect
 from sqlalchemy.sql.expression import or_
@@ -28,6 +28,8 @@ class Base:
     query_class = None
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    email = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.now, server_default=text("NOW()"))
     updated_at = Column(
         DateTime,
@@ -42,12 +44,12 @@ class Base:
     @classmethod
     def get_by_key(cls, key, q=None):
         q = q or cls.query
-        if hasattr(cls, 'key'):
-            q = q.filter(cls.key == key, cls.deleted_at.is_(None))
-        else:
-            raise NotImplemented("Método 'get_by_key' não implementado para '{class_name}'".format(
-                class_name=cls.__name__))
-        q = cls.set_filters(q, cls)
+        # if hasattr(cls, 'key'):
+            # q = q.filter(cls.key == key, cls.deleted_at.is_(None))
+        # else:
+            # raise NotImplemented("Método 'get_by_key' não implementado para '{class_name}'".format(
+                # class_name=cls.__name__))
+        # q = cls.set_filters(q, cls)
 
         return q.first()
         
@@ -64,9 +66,6 @@ class Base:
         return self
 
     def save(self, flush=False, commit=False, call_validation=True):
-
-        if hasattr(self, 'validate') and call_validation:
-            self.validate()
 
         db.session.add(self)
 
