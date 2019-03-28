@@ -7,7 +7,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./api:/api
+      - ./:/api
     links:
       - postgres
   init_db:
@@ -15,7 +15,7 @@ services:
     command: python manage.py db init
     env_file: dev.env
     volumes:
-      - ./api:/api
+      - ./:/api
     links:
       - postgres
   migrate:
@@ -23,7 +23,7 @@ services:
     command: python manage.py db migrate
     env_file: dev.env
     volumes:
-      - ./api:/api
+      - ./:/api
     links:
       - postgres
   upgrade:
@@ -31,7 +31,7 @@ services:
     command: python manage.py db upgrade
     env_file: dev.env
     volumes:
-      - ./api:/api
+      - ./:/api
     links:
       - postgres
   revision:
@@ -39,7 +39,7 @@ services:
     command: python manage.py db revision --rev-id eads_analyze
     env_file: dev.env
     volumes:
-      - ./api:/api
+      - ./:/api
     links:
       - postgres
   downgrade:

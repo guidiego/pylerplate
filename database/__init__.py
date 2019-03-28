@@ -11,8 +11,8 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.inspection import inspect
 from sqlalchemy.sql.expression import or_
 
-from libs.api_error import abort_json
-from utils import http_status
+# from libs.api_error import abort_json
+# from utils import http_status
 
 class Base:
     __table__ = None
