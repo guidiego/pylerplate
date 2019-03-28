@@ -1,0 +1,60 @@
+version: '3'
+services:
+  api:
+    build: ./
+    command: python main.py
+    env_file: dev.env
+    ports:
+      - 80:80
+    volumes:
+      - ./api:/api
+    links:
+      - postgres
+  init_db:
+    image: bandura_api
+    command: python manage.py db init
+    env_file: dev.env
+    volumes:
+      - ./api:/api
+    links:
+      - postgres
+  migrate:
+    image: bandura_api
+    command: python manage.py db migrate
+    env_file: dev.env
+    volumes:
+      - ./api:/api
+    links:
+      - postgres
+  upgrade:
+    image: bandura_api
+    command: python manage.py db upgrade
+    env_file: dev.env
+    volumes:
+      - ./api:/api
+    links:
+      - postgres
+  revision:
+    image: bandura_api
+    command: python manage.py db revision --rev-id eads_analyze
+    env_file: dev.env
+    volumes:
+      - ./api:/api
+    links:
+      - postgres
+  downgrade:
+    image: bandura_api
+    command: python manage.py db downgrade
+    env_file: dev.env
+    volumes:
+      - ./api:/api
+    links:
+      - postgres
+  postgres:
+    image: postgres
+    env_file: dev.env
+    restart: always
+    volumes:
+      - ./postgres:/var/lib/postgresql
+    ports:
+      - "5432:5432"
