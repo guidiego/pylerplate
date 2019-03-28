@@ -1,7 +1,6 @@
 FROM python:3.6-alpine
 
-ADD ./api /api
-ADD ./requirements.txt /api
+ADD ./ /api
 
 EXPOSE 80
 

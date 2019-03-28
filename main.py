@@ -16,3 +16,6 @@ class UserSchema(Schema):
 @marshal_with(UserSchema(many=True))
 def get_pets(**kwargs):
     return User.query.filter_by(**kwargs)
+
+if __name__ == "__main__":
+    app.run(debug=True)
