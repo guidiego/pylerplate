@@ -47,7 +47,7 @@ services:
     command: python manage.py db downgrade
     env_file: dev.env
     volumes:
-      - ./api:/api
+      - ./:/api
     links:
       - postgres
   postgres:
