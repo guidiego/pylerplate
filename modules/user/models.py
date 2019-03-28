@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy import Column, DateTime, Integer, Text, String, Binary, text
 
-from main import bcrypt
+from app import bcrypt
 
 class User(Base):
 
