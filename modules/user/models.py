@@ -2,8 +2,6 @@ import datetime
 import random
 import string
 
-from passlib import hash
-
 from database import Base
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
