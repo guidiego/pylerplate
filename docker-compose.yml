@@ -2,7 +2,7 @@ version: '3'
 services:
   api:
     build: ./
-    command: python main.py
+    command: python manage.py run
     env_file: dev.env
     ports:
       - 80:80
@@ -11,7 +11,7 @@ services:
     links:
       - postgres
   init_db:
-    image: bandura_api
+    image: pylerplate_api
     command: python manage.py db init
     env_file: dev.env
     volumes:
@@ -19,7 +19,7 @@ services:
     links:
       - postgres
   migrate:
-    image: bandura_api
+    image: pylerplate_api
     command: python manage.py db migrate
     env_file: dev.env
     volumes:
@@ -27,7 +27,7 @@ services:
     links:
       - postgres
   upgrade:
-    image: bandura_api
+    image: pylerplate_api
     command: python manage.py db upgrade
     env_file: dev.env
     volumes:
@@ -35,7 +35,7 @@ services:
     links:
       - postgres
   revision:
-    image: bandura_api
+    image: pylerplate_api
     command: python manage.py db revision --rev-id eads_analyze
     env_file: dev.env
     volumes:
@@ -43,7 +43,7 @@ services:
     links:
       - postgres
   downgrade:
-    image: bandura_api
+    image: pylerplate_api
     command: python manage.py db downgrade
     env_file: dev.env
     volumes:

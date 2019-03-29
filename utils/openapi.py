@@ -19,7 +19,7 @@ def api(path='/', methods=['GET'], marshal_with=None, use_kwargs=None, **wrapkwa
         return new_func
     return decorator
 
-def register_rules(app, docs, resources):
+def register_rules(app, resources):
     for resource in resources:
         for func_name in (d for d in dir(resource) if not d.startswith('__')):
             func = getattr(resource, func_name)
@@ -35,4 +35,4 @@ def register_rules(app, docs, resources):
                     strict_slashes=False,
                 )
 
-                docs.register(func, endpoint=endpoint)
+                app.__docs__.register(func, endpoint=endpoint)

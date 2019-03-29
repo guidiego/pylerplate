@@ -13,3 +13,7 @@ simplejson
 psycopg2
 Flask-SQLAlchemy
 Flask-Migrate
+
+# Utils
+Flask-Script
+flask-bcrypt
