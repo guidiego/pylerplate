@@ -1,24 +1,19 @@
-from database import Base
-from sqlalchemy.ext.hybrid import hybrid_property
+from database import Base, db
 from sqlalchemy import Column, String, Binary
 
 from app import bcrypt
 
 
-class User(Base):
+class User(Base, db.Model):
     __tablename__ = 'users'
 
-    email = Column(String, unique=True, nullable=False)
-    password = Column(Binary(60), nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    password = db.Column(db.Binary(60), nullable=False)
 
     def __init__(self, *args, **kwargs):
         self.email = kwargs['email']
-        self._password = kwargs['password']
+        self.password = kwargs['password']
 
-    @hybrid_property
-    def _password(self):
-        return self.password
-
-    @_password.setter
-    def set_password(self, plaintext_password):
+    @password.setter
+    def setpassword(self, plaintext_password):
         self.password = bcrypt.generate_password_hash(plaintext_password)
