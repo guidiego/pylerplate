@@ -7,7 +7,10 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.inspection import inspect
 
 
-class Base:
+db = SQLAlchemy()
+
+
+class Base():
     __table__ = None
 
     @declared_attr
@@ -20,17 +23,17 @@ class Base:
     query = None
     query_class = None
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    deleted_at = Column(DateTime)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    deleted_at = db.Column(db.DateTime)
 
-    created_at = Column(
-        DateTime,
+    created_at = db.Column(
+        db.DateTime,
         default=datetime.datetime.now,
         server_default=text("NOW()"),
     )
 
-    updated_at = Column(
-        DateTime,
+    updated_at = db.Column(
+        db.DateTime,
         onupdate=datetime.datetime.now,
         nullable=True,
         server_default=text("NULL ON UPDATE NOW()"),
@@ -117,6 +120,3 @@ class Base:
             data[c.name] = value
 
         return data
-
-
-db = SQLAlchemy(model_class=Base)

@@ -1,6 +1,8 @@
-from utils.openapi import MethodResource, api
+from flask_apispec import MethodResource
+
 # from modules.user.models import User
 from modules.user.schemas import UserSchema
+from utils.openapi import api
 
 
 class UserResource(MethodResource):
