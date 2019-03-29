@@ -1,18 +1,11 @@
-import ast
 import datetime
-import re
-import uuid
 from decimal import Decimal
 
-from flask import request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, DateTime, Integer, Text, String, text, func
+from sqlalchemy import Column, DateTime, Integer, text
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.inspection import inspect
-from sqlalchemy.sql.expression import or_
 
-# from libs.api_error import abort_json
-# from utils import http_status
 
 class Base:
     __table__ = None
@@ -28,14 +21,20 @@ class Base:
     query_class = None
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.now, server_default=text("NOW()"))
+    deleted_at = Column(DateTime)
+
+    created_at = Column(
+        DateTime,
+        default=datetime.datetime.now,
+        server_default=text("NOW()"),
+    )
+
     updated_at = Column(
         DateTime,
-        onupdate=datetime.datetime.now, nullable=True, server_default=text("NULL ON UPDATE NOW()")
+        onupdate=datetime.datetime.now,
+        nullable=True,
+        server_default=text("NULL ON UPDATE NOW()"),
     )
-    deleted_at = Column(DateTime)
 
     def __iter__(self):
         _data = self.as_dict()
@@ -44,15 +43,7 @@ class Base:
     @classmethod
     def get_by_key(cls, key, q=None):
         q = q or cls.query
-        # if hasattr(cls, 'key'):
-            # q = q.filter(cls.key == key, cls.deleted_at.is_(None))
-        # else:
-            # raise NotImplemented("Método 'get_by_key' não implementado para '{class_name}'".format(
-                # class_name=cls.__name__))
-        # q = cls.set_filters(q, cls)
-
         return q.first()
-        
 
     @classmethod
     def get(cls, _id, q=None):
@@ -107,7 +98,9 @@ class Base:
         data = {}
         for c in self.__table__.columns:
 
-            if not show_ids and (c.name.strip() == inspect(self.__class__).primary_key[0].name):
+            if not show_ids and (
+                c.name.strip() == inspect(self.__class__).primary_key[0].name
+            ):
                 continue
 
             if 'password' in c.name.lower():

@@ -1,6 +1,7 @@
 from utils.openapi import MethodResource, api
-from modules.user.models import User
+# from modules.user.models import User
 from modules.user.schemas import UserSchema
+
 
 class UserResource(MethodResource):
     base_url = '/users'

@@ -17,3 +17,9 @@ Flask-Migrate
 # Utils
 Flask-Script
 flask-bcrypt
+
+# Quality
+pytest
+pytest-cov
+flake8
+pycodestyle
