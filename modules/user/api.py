@@ -4,6 +4,7 @@ from flask_apispec import MethodResource
 from modules.user.models import User
 from modules.user.schemas import UserSchema
 from utils.openapi import api
+from utils.acl import acl
 from utils import http_status
 
 class UserResource(MethodResource):
@@ -31,6 +32,7 @@ class UserResource(MethodResource):
         path='/',
         marshal_with=UserSchema(many=True),
     )
+    @acl(allow_for=['COMMON'])
     def get_users():
         return UserSchema(many=True).dump(User.get_all()).data
 
@@ -39,6 +41,7 @@ class UserResource(MethodResource):
         path='/<int:id>',
         marshal_with=UserSchema(many=False),
     )
+    @acl(allow_for=['COMMON'])
     def get_user(id):
         return UserSchema(many=False).dump(User.get(id)).data
 
@@ -48,11 +51,16 @@ class UserResource(MethodResource):
         methods=['DELETE'],
         marshal_with={"204": {"description": "Bank information deleted"}},
     )
+    @acl(
+        request_by_same_id=True,
+        allow_for=['ADMIN']
+    )
     def delete_user(id):
         user = User.get(id)
         user.delete()
         return make_response('', http_status.HTTP_204_NO_CONTENT)
 
+    # TODO: Make it works
     @staticmethod
     @api(
         path='/<int:id>',
@@ -60,7 +68,10 @@ class UserResource(MethodResource):
         use_kwargs=UserSchema(dump_only=["password"]),
         marshal_with=UserSchema(many=False),
     )
-    #@acl.auth(permission=['COMMON'], is_same_author=True)
+    @acl(
+        request_by_same_id=True,
+        allow_for=['ADMIN']
+    )
     def update_user(id):
         user_obj = UserSchema(dump_only=["password"], strict=True).load(
             request.get_json(), instance=User.get(id), partial=True
