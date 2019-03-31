@@ -1,7 +1,7 @@
 from flask import request, make_response
 from flask_apispec import MethodResource
 
-from modules.user.models import User
+from modules.user.models import User, UserPermission
 from modules.user.schemas import UserSchema
 from utils.openapi import api
 from utils.acl import acl
@@ -23,6 +23,9 @@ class UserResource(MethodResource):
         data = request.get_json()
         user_obj = UserSchema(strict=True).load(data)
         user_obj.data.save(flush=True, commit=True)
+
+        permission = UserPermission.set_common(user_obj.data.id)
+        permission.save(flush=True, commit=True)
 
         return UserSchema(many=False).dump(user_obj.data).data
         
@@ -65,18 +68,19 @@ class UserResource(MethodResource):
     @api(
         path='/<int:id>',
         methods=['PUT'],
-        use_kwargs=UserSchema(dump_only=["password"]),
+        use_kwargs=UserSchema(exclude=['password']),
         marshal_with=UserSchema(many=False),
     )
     @acl(
         request_by_same_id=True,
         allow_for=['ADMIN']
     )
-    def update_user(id):
-        user_obj = UserSchema(dump_only=["password"], strict=True).load(
-            request.get_json(), instance=User.get(id), partial=True
+    def update_user(id, **kwargs):
+        print(id, kwargs)
+        user_obj = UserSchema(strict=True).load(
+            kwargs, instance=User.get(id), partial=True
         )
 
-        user_obj.data.save(commit=True)
+        user_obj.data.save(flush=True, commit=True)
 
-        return UserSchema(many=False).dump(user_obj).data
+        return UserSchema(many=False).dump(user_obj.data).data
