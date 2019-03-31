@@ -3,6 +3,7 @@ import os
 class Config():
     PORT=os.getenv('PORT', default=80)
     HOST=os.getenv('HOST', default='0.0.0.0')
+    DEBUG=os.getenv('FLASK_DEBUG', default=False)
 
     DB_NAME=os.getenv('POSTGRES_DB', default='t4u')
     DB_USER=os.getenv('POSTGRES_USER')
