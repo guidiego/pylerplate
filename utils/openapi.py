@@ -17,9 +17,7 @@ def api(
         if use_kwargs is not None:
             new_func = kw(use_kwargs)(new_func)
 
-        if wrapkwargs:
-            new_func = doc(**wrapkwargs)(new_func)
-
+        new_func.__docs__ = wrapkwargs
         new_func.__url__ = path
         new_func.__method__ = methods
 
@@ -32,14 +30,29 @@ def register_rules(app, resources):
         for func_name in (d for d in dir(resource) if not d.startswith('__')):
             func = getattr(resource, func_name)
 
-            print(func_name)
+
             if hasattr(func, '__url__') and hasattr(func, '__method__'):
-                endpoint = '{}.{}'.format(resource.__name__, func.__name__)
+                func_url = func.__url__
+                func_method = func.__method__
+                func_name = func.__name__
+                doc_opts = {}
+
+                if hasattr(func, '__docs__'):
+                    doc_opts = {
+                        **func.__docs__,
+                        'tags': [
+                            resource.default_tag,
+                            *func.__docs__.get('tags', []),
+                        ]
+                    }
+
+                func = doc(**doc_opts)(func)        
+                endpoint = '{}.{}'.format(resource.__name__, func_name)
                 app.add_url_rule(
-                    resource.base_url + func.__url__,
+                    resource.base_url + func_url,
                     endpoint=endpoint,
                     view_func=func,
-                    methods=func.__method__,
+                    methods=func_method,
                     strict_slashes=False,
                 )
 

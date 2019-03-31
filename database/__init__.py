@@ -7,9 +7,6 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.inspection import inspect
 
 
-db = SQLAlchemy()
-
-
 class Base():
     __table__ = None
 
@@ -23,20 +20,22 @@ class Base():
     query = None
     query_class = None
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    deleted_at = db.Column(db.DateTime)
+    id = Column(Integer, primary_key=True, autoincrement=True)
 
-    created_at = db.Column(
-        db.DateTime,
-        default=datetime.datetime.now,
-        server_default=text("NOW()"),
+    deleted_at = Column(
+        DateTime,
+        nullable=True
     )
 
-    updated_at = db.Column(
-        db.DateTime,
+    created_at = Column(
+        DateTime,
+        default=datetime.datetime.now,
+    )
+
+    updated_at = Column(
+        DateTime,
         onupdate=datetime.datetime.now,
         nullable=True,
-        server_default=text("NULL ON UPDATE NOW()"),
     )
 
     def __iter__(self):
@@ -44,14 +43,18 @@ class Base():
         return ((k, v) for k, v in _data.items())
 
     @classmethod
-    def get_by_key(cls, key, q=None):
+    def get_only_available(cls, q):
+        return q.filter(cls.deleted_at.is_(None))
+
+    @classmethod
+    def get_all(cls, q=None):
         q = q or cls.query
-        return q.first()
+        return cls.get_only_available(q).all()
 
     @classmethod
     def get(cls, _id, q=None):
         q = q or cls.query
-        q = q.filter(cls.id == _id, cls.deleted_at.is_(None))
+        q = cls.get_only_available(q).filter(cls.id == _id)
 
         return q.first()
 
@@ -92,11 +95,6 @@ class Base():
         if commit:
             self.commit(flush=flush)
 
-    @classmethod
-    def get_all(cls, q=None):
-        cls.query.filter(cls.deleted_at.is_(None))
-        return q.all()
-
     def as_dict(self, show_ids=True):
         data = {}
         for c in self.__table__.columns:
@@ -120,3 +118,6 @@ class Base():
             data[c.name] = value
 
         return data
+
+
+db = SQLAlchemy(model_class=Base)
