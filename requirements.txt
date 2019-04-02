@@ -5,6 +5,7 @@ flask-apispec
 
 # Schemas
 marshmallow
+marshmallow_enum
 marshmallow-sqlalchemy
 flask-marshmallow
 simplejson
