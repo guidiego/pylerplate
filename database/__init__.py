@@ -62,14 +62,23 @@ class Base():
         db.session.expunge(self)
         return self
 
-    def save(self, flush=False, commit=False, call_validation=True):
+    def pre_save(self):
+        pass
+
+    def save(self, flush=False, commit=False, call_validation=True, pre_save=True, post_save=True):
+        
+        pre_save and self.pre_save()
 
         db.session.add(self)
 
         flush and db.session.flush()
         commit and self.commit()
+        post_save and self.post_save()
 
         return self
+
+    def post_save(self):
+        pass
 
     def merge(self):
         db.session.merge(self)
