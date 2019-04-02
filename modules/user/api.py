@@ -63,10 +63,9 @@ class UserResource(MethodResource):
         user.delete()
         return make_response('', http_status.HTTP_204_NO_CONTENT)
 
-    # TODO: Make it works
     @staticmethod
     @api(
-        path='/<int:id>',
+        path='/<int:user_id>',
         methods=['PUT'],
         use_kwargs=UserSchema(exclude=['password']),
         marshal_with=UserSchema(many=False),
@@ -75,12 +74,12 @@ class UserResource(MethodResource):
         request_by_same_id=True,
         allow_for=['ADMIN']
     )
-    def update_user(id, **kwargs):
-        print(id, kwargs)
+    def update_user(**kwargs):
+        user_id = request.view_args.get('user_id')
         user_obj = UserSchema(strict=True).load(
-            kwargs, instance=User.get(id), partial=True
+            kwargs, instance=User.get(user_id), partial=True
         )
 
-        user_obj.data.save(flush=True, commit=True)
+        user_obj.data.save(flush=True, commit=True, pre_save=False)
 
         return UserSchema(many=False).dump(user_obj.data).data
