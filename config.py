@@ -12,6 +12,7 @@ class Config():
     DB_PORT=os.getenv('POSTGRES_PORT')
 
     APP_URL = os.getenv('APP_URL')
+    REQUEST_AUTHOR_ID = os.getenv('REQUEST_AUTHOR_ID')
     PASSWORD_SECRET=os.getenv('PASSWORD_SECRET')
 
     SQLALCHEMY_DATABASE_URI = "postgresql://{}:{}@{}:{}/{}".format(

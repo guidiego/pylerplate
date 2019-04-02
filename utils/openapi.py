@@ -17,7 +17,11 @@ def api(
         if use_kwargs is not None:
             new_func = kw(use_kwargs)(new_func)
 
-        new_func.__docs__ = wrapkwargs
+        if hasattr(new_func, '__docs__'):
+            new_func.__docs__ += wrapkwargs
+        else:
+            new_func.__docs__ = wrapkwargs
+            
         new_func.__url__ = path
         new_func.__method__ = methods
 

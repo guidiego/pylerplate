@@ -31,32 +31,33 @@ class UserResource(MethodResource):
         
 
     @staticmethod
+    @acl(permission_to_ignore_rules=['COMMON'])
     @api(
         path='/',
         marshal_with=UserSchema(many=True),
+        description='This endpoint creates a User inside system'
     )
-    @acl(allow_for=['COMMON'])
     def get_users():
         return UserSchema(many=True).dump(User.get_all()).data
 
     @staticmethod
+    @acl(permission_to_ignore_rules=['COMMON'])
     @api(
         path='/<int:id>',
         marshal_with=UserSchema(many=False),
     )
-    @acl(allow_for=['COMMON'])
     def get_user(id):
         return UserSchema(many=False).dump(User.get(id)).data
 
     @staticmethod
+    @acl(
+        request_by_same_id=True,
+        permission_to_ignore_rules=['ADMIN']
+    )
     @api(
         path='/<int:id>',
         methods=['DELETE'],
         marshal_with={"204": {"description": "Bank information deleted"}},
-    )
-    @acl(
-        request_by_same_id=True,
-        allow_for=['ADMIN']
     )
     def delete_user(id):
         user = User.get(id)
@@ -64,15 +65,15 @@ class UserResource(MethodResource):
         return make_response('', http_status.HTTP_204_NO_CONTENT)
 
     @staticmethod
+    @acl(
+        request_by_same_id=True,
+        permission_to_ignore_rules=['ADMIN']
+    )
     @api(
         path='/<int:user_id>',
         methods=['PUT'],
         use_kwargs=UserSchema(exclude=['password']),
         marshal_with=UserSchema(many=False),
-    )
-    @acl(
-        request_by_same_id=True,
-        allow_for=['ADMIN']
     )
     def update_user(**kwargs):
         user_id = request.view_args.get('user_id')
