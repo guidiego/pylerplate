@@ -40,15 +40,16 @@ class UserResource(MethodResource):
     def get_users():
         return UserSchema(many=True).dump(User.get_all()).data
 
+    #TODO: Fix id error
     @staticmethod
     @acl(permission_to_ignore_rules=['COMMON'])
     @api(
-        path='/<int:id>',
+        path='/<int:user_id>',
         marshal_with=UserSchema(many=False),
         description='Get an User'
     )
-    def get_user(id):
-        return UserSchema(many=False).dump(User.get(id)).data
+    def get_user(user_id):
+        return UserSchema(many=False).dump(User.get(user_id)).data
 
     @staticmethod
     @acl(
