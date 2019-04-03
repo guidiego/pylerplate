@@ -12,14 +12,7 @@ class UserSchema(BaseSchema):
         model = User
 
 class UserPermissionSchema(BaseSchema):
-    # permission = EnumField(PermissionEnum, by_value=True)
-    # permission = fields.Method("convert_enum")
     permission = fields.Str(dump_only=True)
-
-    # def convert_enum(self, obj):
-    #     obj = obj.permission.name
-    #     print(obj.permission.name)
-    #     return obj
 
     class Meta:
         model = UserPermission
