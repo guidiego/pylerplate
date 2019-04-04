@@ -1,0 +1,26 @@
+# Web Application
+Flask
+flask-cors
+flask-apispec
+
+# Schemas
+marshmallow
+marshmallow_enum
+marshmallow-sqlalchemy
+flask-marshmallow
+simplejson
+
+# Database
+psycopg2
+Flask-SQLAlchemy
+Flask-Migrate
+
+# Utils
+Flask-Script
+flask-bcrypt
+
+# Quality
+pytest
+pytest-cov
+flake8
+pycodestyle
