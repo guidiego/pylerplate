@@ -15,13 +15,13 @@ class UserResource(MethodResource):
     @api(
         path='/',
         methods=['POST'],
-        use_kwargs=UserSchema(),
+        use_kwargs=UserSchema(dump_only=['permissions']),
         marshal_with=UserSchema(),
         description='Create an User'
     )
     def create_users(**kwargs):
         data = request.get_json()
-        user_obj = UserSchema(strict=True).load(data)
+        user_obj = UserSchema(dump_only=['permissions'], strict=True).load(data)
         user_obj.data.save(flush=True, commit=True)
 
         permission = UserPermission.set_common(user_obj.data.id)
