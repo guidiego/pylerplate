@@ -1,8 +1,9 @@
 import datetime
+import uuid
 from decimal import Decimal
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, DateTime, Integer, text
+from sqlalchemy import Column, DateTime, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.inspection import inspect
 
@@ -20,7 +21,7 @@ class Base():
     query = None
     query_class = None
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
 
     deleted_at = Column(
         DateTime,
@@ -47,9 +48,25 @@ class Base():
         return q.filter(cls.deleted_at.is_(None))
 
     @classmethod
-    def get_all(cls, q=None):
+    def get_all(cls, workspace=None, page=None, user=None, limit=None, q=None):
         q = q or cls.query
-        return cls.get_only_available(q).all()
+        q = cls.get_only_available(q)
+
+        if limit is None:
+            limit = '10'
+
+        if workspace is not None:
+            q = q.filter(cls.workspace_id == workspace.id)
+
+        if user is not None:
+            q = q.filter(cls.user_id == user)
+
+        q = q.order_by(cls.created_at.desc())
+
+        if page is None:
+            return q.all()
+
+        return q.paginate(int(page), int(limit), False)
 
     @classmethod
     def get(cls, _id, q=None):

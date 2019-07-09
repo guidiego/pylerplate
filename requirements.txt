@@ -1,11 +1,11 @@
 # Web Application
 Flask
 flask-cors
-flask-apispec
+flask-apispec==0.8.0
+bjoern
 
 # Schemas
 marshmallow
-marshmallow_enum
 marshmallow-sqlalchemy
 flask-marshmallow
 simplejson
@@ -14,13 +14,17 @@ simplejson
 psycopg2
 Flask-SQLAlchemy
 Flask-Migrate
+flask-redis
+sqlalchemy-utils
 
 # Utils
 Flask-Script
 flask-bcrypt
 
 # Quality
-pytest
+pytest-flask
+pytest==5.00
 pytest-cov
 flake8
 pycodestyle
+coveralls

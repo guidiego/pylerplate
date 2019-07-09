@@ -1,0 +1,12 @@
+language: python
+python:
+  - '3.6'
+services:
+  - redis-server
+install: pip install -r requirements.txt
+script:
+  - flake8 --exclude migrations,tests .
+  - pycodestyle --exclude migrations,tests .
+  - pytest --cov=.
+after_success:
+  - coveralls

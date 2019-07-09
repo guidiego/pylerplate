@@ -104,6 +104,9 @@ venv.bak/
 .mypy_cache/
 
 # project trash
+test_db
 postgres
+redis
 dev.env
 prod.env
+test.env

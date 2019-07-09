@@ -1,6 +1,5 @@
 import logging
 from flask import jsonify
-from marshmallow.exceptions import ValidationError
 
 
 class BaseError(Exception):
@@ -17,18 +16,29 @@ class BaseError(Exception):
         if payload is not None:
             self.payload = payload
 
-
     def handle_error(self):
         logging.exception('Application Error', extra={'stack': True})
-        response = jsonify({'error_code': self.error_code, 'payload': self.payload})
+        response = jsonify({
+            'error_code': self.error_code,
+            'payload': self.payload
+        })
+
         response.status_code = self.status_code
         return response
 
-def handle_marshmallow_error(marshmallow_error):
 
-    response = jsonify({'error_code': 4, 'payload': marshmallow_error.messages})
-    response.status_code = BaseError.status_code
-    return response
+def handle_marshmallow_error(marshmallow_error):
+    error = BaseError(4, payload=marshmallow_error.messages)
+    # print('test')
+    # print(marshmallow_error)
+    # response = jsonify({
+    #     'error_code': 4,
+    #     'payload': marshmallow_error.messages
+    # })
+
+    # response.status_code = BaseError.status_code
+    return error.handle_error()
+
 
 def internal_server_handler(e):
     logging.exception('Internal Server Error', extra={'stack': True})
@@ -36,3 +46,14 @@ def internal_server_handler(e):
     response.status_code = 500
     return response
 
+
+def db_integrity_error(e):
+    message = e.orig.diag.constraint_name
+
+    response = jsonify({
+        'error_code': 5,
+        'payload': {message: 'Esse dado já consta no banco!'}
+    })
+
+    response.status_code = 447
+    return response

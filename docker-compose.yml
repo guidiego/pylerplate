@@ -10,6 +10,26 @@ services:
       - ./:/api
     links:
       - postgres
+      - redis
+  
+  test:
+    image: pylerplate_api
+    command: pytest
+    env_file: test.env
+    volumes:
+      - ./:/api
+    links:
+      - redis
+
+  test_coverage:
+    image: pylerplate_api
+    command: pytest --cov=.
+    env_file: test.env
+    volumes:
+      - ./:/api
+    links:
+      - redis
+
   init_db:
     image: pylerplate_api
     command: python manage.py db init
@@ -18,6 +38,7 @@ services:
       - ./:/api
     links:
       - postgres
+
   migrate:
     image: pylerplate_api
     command: python manage.py db migrate
@@ -26,6 +47,7 @@ services:
       - ./:/api
     links:
       - postgres
+
   upgrade:
     image: pylerplate_api
     command: python manage.py db upgrade
@@ -34,14 +56,16 @@ services:
       - ./:/api
     links:
       - postgres
+
   revision:
     image: pylerplate_api
-    command: python manage.py db revision --rev-id eads_analyze
+    command: python manage.py db revision
     env_file: dev.env
     volumes:
       - ./:/api
     links:
       - postgres
+
   downgrade:
     image: pylerplate_api
     command: python manage.py db downgrade
@@ -50,6 +74,7 @@ services:
       - ./:/api
     links:
       - postgres
+
   postgres:
     image: postgres
     env_file: dev.env
@@ -58,3 +83,10 @@ services:
       - ./postgres:/var/lib/postgresql
     ports:
       - "5432:5432"
+
+  redis:
+    image: redis:5.0-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis:/data

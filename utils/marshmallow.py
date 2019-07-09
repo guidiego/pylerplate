@@ -1,3 +1,4 @@
+from marshmallow import fields, Schema
 from app import marshmallow
 
 
@@ -15,3 +16,8 @@ class BaseSchema(marshmallow.ModelSchema):
         kwargs['load_only'] += self.load_only
 
         super(BaseSchema, self).__init__(*args, **kwargs)
+
+
+class BasePageReturnSchema(Schema):
+    total = fields.Integer()
+    page = fields.Integer()
