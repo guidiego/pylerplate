@@ -23,7 +23,7 @@ flask-bcrypt
 
 # Quality
 pytest-flask
-pytest==5.00
+pytest==9.0.3
 pytest-cov
 flake8
 pycodestyle
